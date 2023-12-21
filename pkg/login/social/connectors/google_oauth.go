@@ -34,6 +34,7 @@ type googleUserData struct {
 	ID            string `json:"sub"`
 	Email         string `json:"email"`
 	Name          string `json:"name"`
+	Domain        string `json:"domain"`
 	EmailVerified bool   `json:"email_verified"`
 	rawJSON       []byte `json:"-"`
 }
@@ -53,6 +54,14 @@ func NewGoogleProvider(info *social.OAuthInfo, cfg *setting.Cfg, ssoSettings sso
 	}
 
 	return provider
+}
+
+func (s *SocialGoogle) IsEmailAllowed(email string) bool {
+	if len(s.info.AllowedDomains) == 0 {
+		return true
+	}
+
+	return slices.Contains(s.info.AllowedDomains, email)
 }
 
 func (s *SocialGoogle) Validate(ctx context.Context, settings ssoModels.SSOSettings) error {
