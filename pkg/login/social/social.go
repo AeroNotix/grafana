@@ -101,6 +101,7 @@ type BasicUserInfo struct {
 	Id             string
 	Name           string
 	Email          string
+	Domain         string
 	Login          string
 	Role           org.RoleType
 	IsGrafanaAdmin *bool // nil will avoid overriding user's set server admin setting

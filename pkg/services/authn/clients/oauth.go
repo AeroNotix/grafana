@@ -136,6 +136,12 @@ func (c *OAuth) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 		return nil, errOAuthMissingRequiredEmail.Errorf("required attribute email was not provided")
 	}
 
+	if userInfo.Domain != "" {
+		if !c.connector.IsEmailAllowed(userInfo.Domain) {
+			return nil, errOAuthEmailNotAllowed.Errorf("provided email is not allowed")
+		}
+	}
+
 	if !c.connector.IsEmailAllowed(userInfo.Email) {
 		return nil, errOAuthEmailNotAllowed.Errorf("provided email is not allowed")
 	}

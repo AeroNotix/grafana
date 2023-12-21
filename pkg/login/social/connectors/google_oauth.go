@@ -56,19 +56,6 @@ func NewGoogleProvider(info *social.OAuthInfo, cfg *setting.Cfg, ssoSettings sso
 	return provider
 }
 
-func (s *SocialGoogle) IsEmailAllowed(email string) bool {
-	if len(s.info.AllowedDomains) == 0 {
-		return true
-	}
-
-	valid := false
-	for _, domain := range s.info.AllowedDomains {
-		emailSuffix := fmt.Sprintf("@%s", domain)
-		valid = valid || strings.HasSuffix(strings.ToLower(email), strings.ToLower(emailSuffix))
-	}
-	return valid
-}
-
 func (s *SocialGoogle) Validate(ctx context.Context, settings ssoModels.SSOSettings) error {
 	return nil
 }
@@ -112,6 +99,7 @@ func (s *SocialGoogle) UserInfo(ctx context.Context, client *http.Client, token 
 		Id:             data.ID,
 		Name:           data.Name,
 		Email:          data.Email,
+		Domain:         fmt.Sprintf("@%s", data.Domain),
 		Login:          data.Email,
 		Role:           "",
 		IsGrafanaAdmin: nil,
