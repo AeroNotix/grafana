@@ -61,7 +61,12 @@ func (s *SocialGoogle) IsEmailAllowed(email string) bool {
 		return true
 	}
 
-	return slices.Contains(s.info.AllowedDomains, email)
+	valid := false
+	for _, domain := range s.info.AllowedDomains {
+		emailSuffix := fmt.Sprintf("@%s", domain)
+		valid = valid || strings.HasSuffix(strings.ToLower(email), strings.ToLower(emailSuffix))
+	}
+	return valid
 }
 
 func (s *SocialGoogle) Validate(ctx context.Context, settings ssoModels.SSOSettings) error {
