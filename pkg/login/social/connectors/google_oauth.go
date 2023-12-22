@@ -34,6 +34,7 @@ type googleUserData struct {
 	ID            string `json:"sub"`
 	Email         string `json:"email"`
 	Name          string `json:"name"`
+	Domain        string `json:"domain"`
 	EmailVerified bool   `json:"email_verified"`
 	rawJSON       []byte `json:"-"`
 }
@@ -98,6 +99,7 @@ func (s *SocialGoogle) UserInfo(ctx context.Context, client *http.Client, token 
 		Id:             data.ID,
 		Name:           data.Name,
 		Email:          data.Email,
+		Domain:         fmt.Sprintf("@%s", data.Domain),
 		Login:          data.Email,
 		Role:           "",
 		IsGrafanaAdmin: nil,

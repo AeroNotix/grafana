@@ -136,8 +136,14 @@ func (c *OAuth) Authenticate(ctx context.Context, r *authn.Request) (*authn.Iden
 		return nil, errOAuthMissingRequiredEmail.Errorf("required attribute email was not provided")
 	}
 
-	if !c.connector.IsEmailAllowed(userInfo.Email) {
-		return nil, errOAuthEmailNotAllowed.Errorf("provided email is not allowed")
+	if userInfo.Domain != "" {
+		if !c.connector.IsEmailAllowed(userInfo.Domain) {
+			return nil, errOAuthEmailNotAllowed.Errorf("provided email is not allowed")
+		}
+	} else {
+		if !c.connector.IsEmailAllowed(userInfo.Email) {
+			return nil, errOAuthEmailNotAllowed.Errorf("provided email is not allowed")
+		}
 	}
 
 	orgRoles, isGrafanaAdmin, _ := getRoles(c.cfg, func() (org.RoleType, *bool, error) {
